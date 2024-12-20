@@ -1,0 +1,36 @@
+# Микросервис для работы с установочными данными
+## Действия
+Метод Create принимает объект `PersonalDataModel`, который содержит фамилию, имя, отчество и дату рождения,
+для добавления в базу данных нового лица, и возвращает Id добавленного лица.
+```cs
+public class PersonalDataModel
+{
+    [Required, MaxLength(25)]
+    public string LastName { get; set; }
+
+    [Required, MaxLength(25)]
+    public string FirstName { get; set; }
+
+    public string Patronymic { get; set; }
+
+    [Required, DataType(DataType.Date)]
+    public DateTime DateOfBirth { get; set; }
+}
+```
+Микросервис не может принять решение: добавлять новое лицо в БД или вернуть Id уже существующего лица,
+так как одинаковые ФИО могут иметь более одного лица. Разрешение этого вопроса лежит на совести пользователя или другого микросервиса.
+Поэтому метод `Create` просто добавляет новое лицо в базу данных.
+
+Метод `Read` тоже принимает объект `PersonalDataModel`, а возвращает массив объектов `PersonModel[]`. Почему массив?
+Потому что несколько человек могут иметь одинаковые ФИО.
+
+```cs
+public class PersonModel
+{
+    public int Id { get; set; }
+
+    public string PersonGuid { get; set; }
+
+    public PersonalDataModel[] PersonalData { get; set; }
+}
+```
